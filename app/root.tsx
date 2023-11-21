@@ -1,3 +1,4 @@
+import type { LinksFunction } from "@remix-run/node";
 import {
   Meta,
   Links,
@@ -7,6 +8,15 @@ import {
   LiveReload,
 } from "@remix-run/react";
 
+import appStylesHref from "./app.css";
+
+// Every route can export a links function.
+// They will be collected and rendered into the <Links /> component.
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: appStylesHref },
+]
+
+// This is "Root Route". Typically contains the global layout
 export default function App() {
   return (
     <html lang="en">
