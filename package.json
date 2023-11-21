@@ -1,10 +1,10 @@
 {
   "type": "module",
   "scripts": {
-    "start": "remix run",
     "build": "remix build",
-    "dev": "remix dev -c \"node server.mjs\"",
-    "serve": "remix-serve build/index.js"
+    "dev": "remix dev",
+    "start": "remix-serve build",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@remix-run/express": "^2.3.0",
