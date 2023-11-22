@@ -1,5 +1,5 @@
 import type { LinksFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import {
   Meta,
   Link,
@@ -29,8 +29,8 @@ export const loader = async () => {
 // execute this function when the user click Form button
 export const action = async () => {
   const contact = await createEmptyContact();
-  return json({ contact });
-}
+  return redirect(`/contacts/${contact.id}/edit`);
+};
 
 // This is "Root Route". Typically contains the global layout
 export default function App() {
