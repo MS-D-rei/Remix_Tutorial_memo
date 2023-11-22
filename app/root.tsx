@@ -2,9 +2,9 @@ import type { LinksFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
   Meta,
-  Link,
   Links,
   Form,
+  NavLink,
   Outlet,
   ScrollRestoration,
   Scripts,
@@ -67,7 +67,12 @@ export default function App() {
               <ul>
                 {contacts.map((contact) => (
                   <li key={contact.id}>
-                    <Link to={`contacts/${contact.id}`}>
+                    <NavLink
+                      to={`contacts/${contact.id}`}
+                      className={({ isActive, isPending }) =>
+                        isActive ? "active" : isPending ? "pending" : ""
+                      }
+                    >
                       {contact.first || contact.last ? (
                         <>
                           {contact.first} {contact.last}
@@ -76,7 +81,7 @@ export default function App() {
                         <i>No name</i>
                       )}{" "}
                       {contact.favorite ? <span>*</span> : null}
-                    </Link>
+                    </NavLink>
                   </li>
                 ))}
               </ul>
