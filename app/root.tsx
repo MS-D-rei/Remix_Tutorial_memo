@@ -10,6 +10,7 @@ import {
   Scripts,
   LiveReload,
   useLoaderData,
+  useNavigation,
 } from "@remix-run/react";
 
 import appStylesHref from "./app.css";
@@ -35,6 +36,7 @@ export const action = async () => {
 // This is "Root Route". Typically contains the global layout
 export default function App() {
   const { contacts } = useLoaderData<typeof loader>();
+  const navigation = useNavigation();
 
   return (
     <html lang="en">
@@ -93,7 +95,10 @@ export default function App() {
           </nav>
         </div>
 
-        <div id="detail">
+        <div
+          id="detail"
+          className={navigation.state === "loading" ? "loading" : ""}
+        >
           <Outlet />
         </div>
 
