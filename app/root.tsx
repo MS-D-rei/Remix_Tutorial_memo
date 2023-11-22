@@ -13,7 +13,7 @@ import {
 } from "@remix-run/react";
 
 import appStylesHref from "./app.css";
-import { getContacts } from "./data";
+import { createEmptyContact, getContacts } from "./data";
 
 // Every route can export a links function.
 // They will be collected and rendered into the <Links /> component.
@@ -25,6 +25,12 @@ export const loader = async () => {
   const contacts = await getContacts();
   return json({ contacts });
 };
+
+// execute this function when the user click Form button
+export const action = async () => {
+  const contact = await createEmptyContact();
+  return json({ contact });
+}
 
 // This is "Root Route". Typically contains the global layout
 export default function App() {
