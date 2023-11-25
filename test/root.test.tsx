@@ -127,6 +127,9 @@ describe("root action", async () => {
   // action function will make a contact record to call createEmptyContact
   // and redirect to (`/contacts/${contact.id}/edit`)
   // return response
+  afterAll(async () => {
+    createEmptyContactSpy.mockRestore();
+  })
 
   const createEmptyContactSpy = vi.spyOn(dataUtils, "createEmptyContact");
   const emptyContact: ContactRecord = {
