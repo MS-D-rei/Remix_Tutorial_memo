@@ -1,29 +1,35 @@
 import { describe, it, expect, afterEach, vi, afterAll } from "vitest";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
-// import { RouterProvider, createMemoryRouter } from "react-router-dom";
-import App, { loader } from "~/root";
-import type { ContactRecord } from "~/data";
 import { json } from "@remix-run/node";
 import { createRemixStub } from "@remix-run/testing";
 
+import App, { action, loader } from "~/root";
+import type { ContactRecord } from "~/data";
 import * as dataUtils from "~/data";
 
 afterEach(() => {
   cleanup();
 });
 
+const fakeContacts: ContactRecord[] = [
+  {
+    id: "john-doe",
+    first: "John",
+    last: "Doe",
+    twitter: "@John-Doe",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "jane-doe",
+    first: "Jane",
+    last: "Doe",
+    twitter: "@Jane-Doe",
+    createdAt: new Date().toISOString(),
+  },
+];
+
 describe("root", () => {
   it("renders title", async () => {
-    const fakeContacts: ContactRecord[] = [
-      {
-        id: "john-doe",
-        first: "John",
-        last: "Doe",
-        twitter: "@John-Doe",
-        createdAt: Date.now().toString(),
-      },
-    ];
-
     // https://reactrouter.com/en/6.20.0/routers/create-memory-router
     // This will fail with:
     // Error: You must render this element inside a <Remix> element
@@ -69,27 +75,11 @@ describe("root loader", async () => {
     getContactsSpy.mockRestore();
   });
 
-  const fakeContacts: ContactRecord[] = [
-    {
-      id: "john-doe",
-      first: "John",
-      last: "Doe",
-      twitter: "@John-Doe",
-      createdAt: Date.now().toString(),
-    },
-    {
-      id: "jane-doe",
-      first: "Jane",
-      last: "Doe",
-      twitter: "@Jane-Doe",
-      createdAt: Date.now().toString(),
-    },
-  ];
-
   const getContactsSpy = vi.spyOn(dataUtils, "getContacts");
   getContactsSpy.mockResolvedValue(fakeContacts);
 
   const response = await loader();
+
   it("calls getContacts", async () => {
     expect(getContactsSpy).toHaveBeenCalled();
   });
@@ -132,3 +122,30 @@ _Response [Response] {
     [Symbol(headers map sorted)]: null
   }
 */
+
+describe("root action", async () => {
+  // action function will make a contact record to call createEmptyContact
+  // and redirect to (`/contacts/${contact.id}/edit`)
+  // return response
+
+  const createEmptyContactSpy = vi.spyOn(dataUtils, "createEmptyContact");
+  const emptyContact: ContactRecord = {
+    id: "new-contact",
+    createdAt: new Date().toISOString(),
+  };
+  createEmptyContactSpy.mockResolvedValue(emptyContact);
+
+  const response = await action();
+
+  it("calls createEmptyContact", async () => {
+    expect(createEmptyContactSpy).toHaveBeenCalled();
+  });
+  it("returns response 302", async () => {
+    expect(response.status).toBe(302);
+  });
+  it("returns redirect to '/contacts/:contactId/edit'", async () => {
+    expect(response.headers.get("Location")).toBe(
+      `/contacts/${emptyContact.id}/edit`
+    );
+  });
+});
