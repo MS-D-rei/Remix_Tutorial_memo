@@ -11,7 +11,7 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const updates = Object.fromEntries(formData);
   // This console.log shows up in the terminal, not browser console
-  console.log("updates", updates);
+  // console.log("updates", updates);
   await updateContact(params.contactId, updates);
 
   return redirect(`/contacts/${params.contactId}`);
@@ -21,7 +21,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId");
 
   // This console.log shows up in the terminal, not browser console
-  console.log("params", params);
+  // console.log("params", params);
 
   const contact = await getContact(params.contactId);
   if (!contact) {
