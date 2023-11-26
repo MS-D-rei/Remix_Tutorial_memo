@@ -63,9 +63,23 @@ describe("root", () => {
 
     render(<RemixStub />);
 
-    await waitFor(() => screen.getByText("Remix Contacts"));
+    // await waitFor(() => screen.findByText("Remix Contacts"));
+    // if you return a promise in the waitFor callback, it will wait for the promise to resolve.
+    // https://testing-library.com/docs/dom-testing-library/api-async#waitfor
+    await waitFor(() => screen.findByText("Jane Doe"));
+
     // screen.debug();
+
+    // https://www.robinwieruch.de/react-testing-library/
+    // getByText or getByRole should be go-to search types in react testing library.
+    // getBy -- returns HTMLElement or error.
+    // queryBy -- returns HTMLElement or null. for the case it should not be there.
+    // findBy -- returns promise<T extends HTMLElement>. for async.
     expect(screen.getByText("Remix Contacts")).toBeInTheDocument();
+    // getByRole is usually used to find retreive elements by aria-label attributes.
+    expect(
+      screen.getByRole("heading", { name: "Remix Contacts" })
+    ).toBeInTheDocument();
   });
 });
 
@@ -129,7 +143,7 @@ describe("root action", async () => {
   // return response
   afterAll(async () => {
     createEmptyContactSpy.mockRestore();
-  })
+  });
 
   const createEmptyContactSpy = vi.spyOn(dataUtils, "createEmptyContact");
   const emptyContact: ContactRecord = {
