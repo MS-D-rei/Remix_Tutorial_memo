@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { LinksFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -26,7 +27,7 @@ export const loader = async ({ request }) => {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
   const contacts = await getContacts(q);
-  return json({ contacts });
+  return json({ contacts, q });
 };
 
 // execute this function when the user click Form button
@@ -37,8 +38,16 @@ export const action = async () => {
 
 // This is "Root Route". Typically contains the global layout
 export default function App() {
-  const { contacts } = useLoaderData<typeof loader>();
+  const { contacts, q } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
+
+  // This is for controlling state on back/forward button clicks
+  useEffect(() => {
+    const searchField = document.getElementById("q"); 
+    if (searchField instanceof HTMLInputElement) {
+      searchField.value = q || "";
+    }
+  }, [q])
 
   return (
     <html lang="en">
@@ -55,10 +64,11 @@ export default function App() {
             <Form id="search-form" role="search">
               <input
                 id="q"
-                aria-label="Search contacts"
-                placeholder="Search"
-                type="search"
                 name="q"
+                type="search"
+                defaultValue={q || ""}
+                placeholder="Search"
+                aria-label="Search contacts"
               />
               <div id="search-spinner" aria-hidden hidden={true} />
             </Form>
