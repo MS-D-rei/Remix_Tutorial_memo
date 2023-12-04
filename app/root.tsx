@@ -96,7 +96,10 @@ export default function App() {
               role="search"
               // when changes happen in the search field, submit the form automatically
               // I think this is not good because this increases the number of requests
-              // onChange={(event) => submit(event.currentTarget)}
+              // onChange={(event) => {
+              //  const isFirstSearch = q === null;
+              //  submit(event.currentTarget, { replace: !isFirstSearch });
+              // }}
             >
               <input
                 id="q"
