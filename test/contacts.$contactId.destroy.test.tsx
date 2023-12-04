@@ -7,9 +7,12 @@ describe("contacts.$contactId.destroy", async () => {
   const deleteContactSpy = vi.spyOn(dataUtils, "deleteContact");
   deleteContactSpy.mockResolvedValue(undefined);
 
+  // first: "John" is not necessary for this test
   const body = new URLSearchParams({
     first: "John",
   });
+
+  // console.log("body: ", body);
 
   const request: Request = new Request(
     "http://localhost:3000/contacts/john-doe/destroy",
@@ -19,11 +22,15 @@ describe("contacts.$contactId.destroy", async () => {
     }
   );
 
+  // console.log("request: ", request);
+
   const response = await action({
     request,
     params: { contactId: "john-doe" },
     context: {},
   });
+
+  // console.log("response: ", response);
 
   it("should call deleteContact with contactId", async () => {
     expect(deleteContactSpy).toHaveBeenCalledWith("john-doe");
