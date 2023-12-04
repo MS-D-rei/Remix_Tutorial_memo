@@ -16,3 +16,6 @@ Remix uses `POST` as a hint to automatically revalidate the data on the page aft
 Remix serializes the form and making a `fetch` request to our server,
 the browser will serialize the form and make a document request.
 So, even if disable JavaScript, the whole thing will still work and gets the same UI in the end either way.
+
+### The reason why there is no event.preventDefault() on the cancel button in $contactId.edit.tsx
+A `<button type="button">`, while seemingly redundant, is the HTML way of preventing a button from submitting its form.
