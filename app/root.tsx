@@ -12,6 +12,7 @@ import {
   LiveReload,
   useLoaderData,
   useNavigation,
+  useSubmit,
 } from "@remix-run/react";
 
 import appStylesHref from "./app.css";
@@ -40,14 +41,15 @@ export const action = async () => {
 export default function App() {
   const { contacts, q } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
+  // const submit = useSubmit();
 
   // This is for controlling state on back/forward button clicks
   useEffect(() => {
-    const searchField = document.getElementById("q"); 
+    const searchField = document.getElementById("q");
     if (searchField instanceof HTMLInputElement) {
       searchField.value = q || "";
     }
-  }, [q])
+  }, [q]);
 
   return (
     <html lang="en">
@@ -61,7 +63,13 @@ export default function App() {
         <div id="sidebar">
           <h1>Remix Contacts</h1>
           <div>
-            <Form id="search-form" role="search">
+            <Form
+              id="search-form"
+              role="search"
+              // when changes happen in the search field, submit the form automatically
+              // I think this is not good because this increases the number of requests
+              // onChange={(event) => submit(event.currentTarget)}
+            >
               <input
                 id="q"
                 name="q"
