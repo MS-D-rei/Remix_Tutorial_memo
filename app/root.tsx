@@ -12,7 +12,7 @@ import {
   LiveReload,
   useLoaderData,
   useNavigation,
-  useSubmit,
+  // useSubmit,
 } from "@remix-run/react";
 
 import appStylesHref from "./app.css";
@@ -42,6 +42,34 @@ export default function App() {
   const { contacts, q } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   // const submit = useSubmit();
+  const searching =
+    navigation.location &&
+    new URLSearchParams(navigation.location.search).has("q");
+
+  // console.log("navigation: ", navigation);
+  // navigation
+  // when idle
+  // {
+  //   formAction: undefined
+  //   formData: undefined
+  //   formEncType: undefined
+  //   formMethod: undefined
+  //   json: undefined
+  //   location: undefined
+  //   state: "idle"
+  //   text: undefined
+  // }
+  // when loading
+  // {
+  //   formAction: "/"
+  //   formData: FormData {}
+  //   formEncType: "application/x-www-form-urlencoded"
+  //   formMethod: "GET"
+  //   json: undefined
+  //   location: {pathname: '/', search: '?q=do', hash: '', state: null, key: 'slm0y4a7'}
+  //   state: "loading"
+  //   text: undefined}
+  // }
 
   // This is for controlling state on back/forward button clicks
   useEffect(() => {
@@ -77,8 +105,9 @@ export default function App() {
                 defaultValue={q || ""}
                 placeholder="Search"
                 aria-label="Search contacts"
+                className={searching ? "searching" : ""}
               />
-              <div id="search-spinner" aria-hidden hidden={true} />
+              <div id="search-spinner" aria-hidden hidden={!searching} />
             </Form>
             <Form method="post">
               <button type="submit">New</button>
@@ -117,7 +146,7 @@ export default function App() {
 
         <div
           id="detail"
-          className={navigation.state === "loading" ? "loading" : ""}
+          className={navigation.state === "loading" && !searching ? "loading" : ""}
         >
           <Outlet />
         </div>
