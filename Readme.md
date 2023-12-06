@@ -19,3 +19,46 @@ So, even if disable JavaScript, the whole thing will still work and gets the sam
 
 ### The reason why there is no event.preventDefault() on the cancel button in $contactId.edit.tsx
 A `<button type="button">`, while seemingly redundant, is the HTML way of preventing a button from submitting its form.
+
+### Method to interact action function
+1. `Form` can be used with action type setting and navigation
+```ts
+// contacts.$contactId.tsx
+// this form navigate to $contactId_.edit.tsx
+<Form action="edit">
+    <button type="submit">Edit</button>
+</Form>
+```
+```ts
+// contacts.$contactId.tsx
+// this form navigate to $contactId.destroy.tsx
+<Form
+    action="destroy"
+    method="post"
+    onSubmit={(event) => {
+        const response = confirm(
+            "Please confirm you want to delete this record."
+        );
+        if (!response) {
+            event.preventDefault();
+        }
+    }}
+>
+    <button type="submit">Delete</button>
+</Form>
+```
+2. `Fetcher.Form` can be used without navigation (stays the same page)
+useful for bookmarks etc.
+```ts
+// contacts.$contactId.tsx
+<fetcher.Form method="post">
+  <button
+    type="submit"
+    aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+    name="favorite"
+    value={favorite ? "false" : "true"}
+  >
+    {favorite ? "★" : "☆"}
+  </button>
+</fetcher.Form>
+```
