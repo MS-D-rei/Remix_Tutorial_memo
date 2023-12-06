@@ -1,13 +1,13 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import type { FunctionComponent } from "react";
 // https://www.npmjs.com/package/tiny-invariant
 import invariant from "tiny-invariant";
 
 import type { ContactRecord } from "~/data";
 
-import { getContact } from "~/data";
+import { getContact, updateContact } from "~/data";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   // if condition is falsy, invariant function will throw.
@@ -15,10 +15,18 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId");
   const contact = await getContact(params.contactId);
   if (!contact) {
-    throw new Response("Not Found", { status: 404});
+    throw new Response("Not Found", { status: 404 });
   }
   return json({ contact });
-}
+};
+
+export const action = async ({ params, request }: ActionFunctionArgs) => {
+  invariant(params.contactId, "Missing contactId");
+  const formData = await request.formData();
+  return updateContact(params.contactId, {
+    favorite: formData.get("favorite") === "true",
+  });
+};
 
 export default function Contact() {
   // const contact = {
@@ -92,10 +100,11 @@ export default function Contact() {
 const Favorite: FunctionComponent<{
   contact: Pick<ContactRecord, "favorite">;
 }> = ({ contact }) => {
+  const fetcher = useFetcher();
   const favorite = contact.favorite;
 
   return (
-    <Form method="post">
+    <fetcher.Form method="post">
       <button
         type="submit"
         aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
@@ -104,6 +113,6 @@ const Favorite: FunctionComponent<{
       >
         {favorite ? "★" : "☆"}
       </button>
-    </Form>
+    </fetcher.Form>
   );
 };
