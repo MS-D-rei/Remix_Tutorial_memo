@@ -62,3 +62,20 @@ useful for bookmarks etc.
   </button>
 </fetcher.Form>
 ```
+
+### Optimistic UI (update UI even the network process has not finished yet)
+When click the bookmark button, there is a delay to update button state.
+Because, push button => wait for action function executes, and takes time => update UI
+
+Here is the fetcher which has formData property.
+When click a button in fetcher.Form, fetcher contains formData
+```ts
+// contacts.$contactId.tsx
+const favorite = fetcher.formData
+    ? fetcher.formData.get("favorite") === "true"
+    : contact.favorite;
+```
+This code makes update immediately after click the button.
+Click button => update UI
+This means we don't wait for action function execution.
+That's why UI looks responsive.
