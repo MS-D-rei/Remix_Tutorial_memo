@@ -101,7 +101,10 @@ const Favorite: FunctionComponent<{
   contact: Pick<ContactRecord, "favorite">;
 }> = ({ contact }) => {
   const fetcher = useFetcher();
-  const favorite = contact.favorite;
+  console.log("fetcher", fetcher.formData)
+  const favorite = fetcher.formData
+    ? fetcher.formData.get("favorite") === "true"
+    : contact.favorite;
 
   return (
     <fetcher.Form method="post">
